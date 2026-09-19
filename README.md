@@ -313,3 +313,10 @@ The current live interface also uses microphone input rather than direct telepho
 
 B.E. - Internet of Things, Cybersecurity with Blockchain
 
+## Copyright
+
+Copyright © 2026 Ashvika Gowda. All rights reserved.
+
+The source code and original materials in this repository may not be
+copied, redistributed, modified, or reused without prior written
+permission.
