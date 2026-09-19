@@ -58,14 +58,6 @@ flowchart TD
 ```
 
 
-There must be **exactly three backticks on that line**, and `## Model` must be outside the Mermaid block.
-
-Save:
-
-```text
-Control + O
-Enter
-Control + X
 
 ## Model
 
