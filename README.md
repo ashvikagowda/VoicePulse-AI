@@ -42,7 +42,7 @@ Streamlit Dashboard
 ```mermaid
 flowchart TD
     A[MacBook Pro Microphone<br/>48 kHz] --> B[Audio Capture]
-    B --> C[Resampling<br/>48 kHz → 16 kHz]
+    B --> C[Resampling<br/>48 kHz to 16 kHz]
     C --> D[Rolling 4-Second Window]
     D --> E[Mel-Spectrogram<br/>64 Mel Bands]
     E --> F[Normalization]
@@ -55,7 +55,17 @@ flowchart TD
     K --> M[Risk Classification]
     L --> M
     M --> N[Streamlit Dashboard]
+```
 
+
+There must be **exactly three backticks on that line**, and `## Model` must be outside the Mermaid block.
+
+Save:
+
+```text
+Control + O
+Enter
+Control + X
 
 ## Model
 
