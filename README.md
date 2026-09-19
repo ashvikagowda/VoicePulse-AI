@@ -1,139 +1,286 @@
 # VoicePulse AI
 
-Real-time AI-generated voice detection system designed to identify synthetic and cloned speech from live microphone input.
+Real-time AI-generated voice detection using a custom CNN audio classifier.
 
-## Overview
+VoicePulse AI captures microphone audio, converts it into a Mel-spectrogram representation, runs CNN inference on a rolling audio window, smooths consecutive predictions, and classifies the current segment as `REAL` or `AI-GENERATED`.
 
-VoicePulse AI analyzes short audio windows and estimates whether the speech is likely real or AI-generated.
+**Status:** Working local prototype with real-time MacBook microphone inference and a Streamlit dashboard.
 
-The project combines:
+---
 
-- CNN-based audio classification
-- ASVspoof2019 training data
-- ASVspoof2021 external evaluation
-- Local-domain fine-tuning
-- Recording-level cross-validation
-- Threshold calibration
-- Real-time microphone inference
-- Streamlit dashboard visualization
+## What the Project Does
 
-## System Pipeline
+The current implementation provides an end-to-end voice classification pipeline:
 
 ```text
-Microphone
-    ↓
-Audio Capture
-    ↓
-4-second Sliding Window
-    ↓
-Audio Preprocessing
-    ↓
-CNN Classifier
-    ↓
-AI Probability
-    ↓
-Threshold Decision
-    ↓
+MacBook Microphone
+        ↓
+48 kHz Audio Capture
+        ↓
+Resampling to 16 kHz
+        ↓
+4-Second Analysis Window
+        ↓
+Mel-Spectrogram Extraction
+        ↓
+Custom CNN
+        ↓
+AI-Generation Probability
+        ↓
+2-Window Smoothing
+        ↓
+0.85 Decision Threshold
+        ↓
 REAL / AI-GENERATED
-    ↓
+        ↓
 Streamlit Dashboard
-
-## Current Decision Logic
-
-The live system uses a calibrated decision threshold:
-
-```text
-AI probability >= 0.85
-        ↓
-AI-GENERATED
-
-AI probability < 0.85
-        ↓
-REAL
 ```
 
-Live processing configuration:
+---
+
+## Model
+
+VoicePulse AI uses a custom convolutional neural network trained for binary classification:
 
 ```text
-Window size: 4 seconds
-Update interval: 1 second
+Class 0 → Real
+Class 1 → AI-generated
 ```
+
+The network contains four convolutional blocks followed by adaptive global average pooling and a fully connected classifier.
+
+The live application loads the trained CNN checkpoint and performs inference on normalized Mel-spectrogram features.
+
+---
 
 ## Model Development
 
-The development pipeline includes:
+The completed development workflow includes:
 
-1. CNN training using ASVspoof2019 data
-2. External evaluation using ASVspoof2021 data
-3. Local recording evaluation
-4. Local-domain fine-tuning
-5. Recording-level 5-fold cross-validation
-6. Threshold analysis and calibration
-7. Real-time microphone inference
+### Training
+
+The CNN was trained using **ASVspoof2019** data.
+
+### External Evaluation
+
+The trained model was evaluated using **ASVspoof2021-DF** data to test performance outside the original training data.
+
+### Local Fine-Tuning
+
+The CNN was fine-tuned using local real and AI-generated recordings.
+
+### Recording-Level Validation
+
+A **5-fold recording-level cross-validation** workflow was implemented and used for local validation.
+
+### Threshold Calibration
+
+The live decision threshold was calibrated and set to:
+
+```text
+0.85
+```
+
+The live classifier therefore uses:
+
+```text
+AI probability >= 0.85 → AI-GENERATED
+AI probability <  0.85 → REAL
+```
+
+---
+
+## Validation Results
+
+The completed local validation experiment produced:
+
+| Metric    |  Result |
+| --------- | ------: |
+| Accuracy  |  98.46% |
+| Precision | 100.00% |
+| Recall    |  96.15% |
+| F1-score  |  98.04% |
+
+These results correspond to the validation experiment used during development. They should not be interpreted as universal performance across all speakers, microphones, codecs, or future voice-generation systems.
+
+---
+
+## Real-Time Detection
+
+The current live application uses the MacBook Pro built-in microphone.
+
+Configuration:
+
+| Parameter              |     Value |
+| ---------------------- | --------: |
+| Microphone sample rate |    48 kHz |
+| Model sample rate      |    16 kHz |
+| Analysis window        | 4 seconds |
+| Update interval        |  1 second |
+| Mel bands              |        64 |
+| FFT size               |      1024 |
+| Hop length             |       256 |
+| Probability smoothing  | 2 windows |
+| Detection threshold    |      0.85 |
+
+The dashboard continuously updates the displayed probability and classification as new audio becomes available.
+
+---
+
+## Dashboard
+
+The Streamlit dashboard currently displays:
+
+* microphone status
+* current `REAL` / `AI-GENERATED` classification
+* AI-generated probability
+* real probability
+* risk level
+* model and audio configuration
+* current analysis state
+
+The dashboard is designed for local real-time testing with the MacBook microphone.
+
+---
+
+## Testing
+
+The repository contains automated tests for the audio-processing and decision layers.
+
+Current test coverage includes:
+
+* audio-window padding
+* audio-window trimming
+* exact-window handling
+* threshold behavior below 0.85
+* threshold behavior at 0.85
+* threshold behavior above 0.85
+* risk classification
+
+Current status:
+
+```text
+7 tests
+7 passed
+```
+
+Run them with:
+
+```bash
+PYTHONPATH=src python -m unittest discover -s tests -v
+```
+
+---
 
 ## Repository Structure
 
 ```text
-voicepulse_ai/
+VoicePulse-AI/
 │
 ├── src/
-│   ├── voicepulse_ai_dashboard.py
+│   ├── voicepulse/
+│   │   ├── __init__.py
+│   │   ├── audio.py
+│   │   ├── config.py
+│   │   ├── dashboard.py
+│   │   ├── decision.py
+│   │   ├── inference.py
+│   │   ├── microphone.py
+│   │   └── model.py
+│   │
+│   └── voicepulse_ai_dashboard.py
+│
+├── scripts/
 │   ├── train_cnn.py
 │   ├── train_cnn_asvspoof2019.py
 │   ├── finetune_cnn_local.py
 │   ├── local_cross_validation.py
-│   ├── evaluate_asvspoof.py
-│   ├── evaluate_cnn_asvspoof.py
-│   ├── evaluate_cnn_recording.py
 │   ├── evaluate_finetuned_recording.py
-│   ├── evaluate_local_domain.py
-│   ├── evaluate_fusion.py
-│   └── ...
+│   └── evaluate_local_domain.py
 │
-├── test_mic.py
-├── test_stream.py
+├── tests/
+│   ├── test_audio.py
+│   └── test_decision.py
+│
+├── README.md
 ├── requirements.txt
-├── .gitignore
-└── README.md
+├── LICENSE
+└── .gitignore
 ```
 
-## Dataset and Model Files
+---
 
-Audio recordings, datasets, and trained model checkpoints are intentionally excluded from this repository.
+## Installation
 
-The repository contains the implementation and evaluation pipeline without distributing the underlying audio recordings or trained model weights.
+Clone the repository:
+
+```bash
+git clone https://github.com/ashvikagowda/VoicePulse-AI.git
+cd VoicePulse-AI
+```
+
+Create a virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
 
 ## Running the Dashboard
 
-Create and activate a Python virtual environment, install the dependencies, then run:
+The trained model checkpoint is intentionally excluded from GitHub.
+
+The application expects the checkpoint at:
+
+```text
+models/cnn/voicepulse_ai_cnn.pth
+```
+
+After placing the checkpoint locally, run:
 
 ```bash
 streamlit run src/voicepulse_ai_dashboard.py
 ```
 
-The dashboard uses the MacBook microphone for live inference.
+The current implementation is intended for local MacBook microphone testing.
 
-## Project Status
+---
 
-* CNN training: complete
-* ASVspoof2019 evaluation: complete
-* ASVspoof2021 external evaluation: complete
-* Local-domain fine-tuning: complete
-* Recording-level validation: complete
-* Threshold calibration: complete
-* Real-time microphone inference: complete
-* Streamlit dashboard: complete
+## Limitations
 
-## Future Scope
+VoicePulse AI is a **research and portfolio prototype**.
 
-* Speaker verification
-* Mobile deployment
-* Telephony and VoIP integration
-* Larger cross-speaker evaluation
-* Model compression and edge deployment
+The current implementation does not provide definitive proof that a voice has been cloned. Model performance can vary with speakers, recording conditions, microphones, codecs, and synthetic-voice generators that were not represented in the development data.
+
+The current live interface also uses microphone input rather than direct telephony or VoIP integration.
+
+---
+
+## Technology Stack
+
+* Python
+* PyTorch
+* Librosa
+* NumPy
+* SoundDevice
+* SoundFile
+* Scikit-learn
+* Hugging Face Datasets
+* Streamlit
+
+---
 
 ## Author
 
-Ashvika Gowda
+**Ashvika Gowda**
 
-B.E. — Internet of Things, Cybersecurity with Blockchain
+B.E. - Internet of Things, Cybersecurity with Blockchain
+
