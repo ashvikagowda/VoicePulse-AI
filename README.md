@@ -126,7 +126,6 @@ Configuration:
 The dashboard continuously updates the displayed probability and classification as new audio becomes available.
 
 ---
-
 ## Dashboard
 
 The Streamlit dashboard currently displays:
@@ -142,6 +141,15 @@ The Streamlit dashboard currently displays:
 The dashboard is designed for local real-time testing with the MacBook microphone.
 
 ---
+## Live Dashboard
+
+### Real Voice Detection
+
+![VoicePulse AI - Real Voice Detection](assets/real.png)
+
+### AI-Generated Voice Detection
+
+![VoicePulse AI - AI-Generated Voice Detection](assets/fake.png)
 
 ## Testing
 
