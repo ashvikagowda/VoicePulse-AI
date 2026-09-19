@@ -37,6 +37,25 @@ Streamlit Dashboard
 ```
 
 ---
+## Architecture
+
+```mermaid
+flowchart TD
+    A[MacBook Pro Microphone<br/>48 kHz] --> B[Audio Capture]
+    B --> C[Resampling<br/>48 kHz → 16 kHz]
+    C --> D[Rolling 4-Second Window]
+    D --> E[Mel-Spectrogram<br/>64 Mel Bands]
+    E --> F[Normalization]
+    F --> G[Custom CNN]
+    G --> H[AI-Generation Probability]
+    H --> I[2-Window Smoothing]
+    I --> J{Probability >= 0.85?}
+    J -->|Yes| K[AI-GENERATED]
+    J -->|No| L[REAL]
+    K --> M[Risk Classification]
+    L --> M
+    M --> N[Streamlit Dashboard]
+
 
 ## Model
 
