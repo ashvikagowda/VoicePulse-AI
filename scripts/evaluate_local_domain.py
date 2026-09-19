@@ -1,3 +1,6 @@
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 from io import BytesIO
 import glob
 
@@ -256,12 +259,10 @@ def cnn_score(waveform):
 # ============================================================
 
 fake_files = sorted(
-    glob.glob("data/fake_wav/*.wav")
-)
+    glob.glob(str(PROJECT_ROOT / "data" / "fake_wav" / "*.wav")))
 
 real_files = sorted(
-    glob.glob("data/real_wav/*.wav")
-)
+    glob.glob(str(PROJECT_ROOT / "data" / "real_wav" / "*.wav")))
 
 print("Fake recordings:", len(fake_files))
 print("Real recordings:", len(real_files))

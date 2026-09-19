@@ -1,3 +1,6 @@
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 import glob
 from pathlib import Path
 
@@ -262,12 +265,10 @@ SEED = 42
 random.seed(SEED)
 
 fake_files = sorted(
-    glob.glob("data/fake_wav/*.wav")
-)
+    glob.glob(str(PROJECT_ROOT / "data" / "fake_wav" / "*.wav")))
 
 real_files = sorted(
-    glob.glob("data/real_wav/*.wav")
-)
+    glob.glob(str(PROJECT_ROOT / "data" / "real_wav" / "*.wav")))
 
 
 def split_files(files):
