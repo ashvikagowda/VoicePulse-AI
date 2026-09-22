@@ -235,53 +235,7 @@ VoicePulse-AI/
 ├── requirements.txt
 ├── LICENSE
 └── .gitignore
-```
 
----
-
-## Installation
-
-Clone the repository:
-
-```bash
-git clone https://github.com/ashvikagowda/VoicePulse-AI.git
-cd VoicePulse-AI
-```
-
-Create a virtual environment:
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## Running the Dashboard
-
-The trained model checkpoint is intentionally excluded from GitHub.
-
-The application expects the checkpoint at:
-
-```text
-models/cnn/voicepulse_ai_cnn.pth
-```
-
-After placing the checkpoint locally, run:
-
-```bash
-streamlit run src/voicepulse_ai_dashboard.py
-```
-
-The current implementation is intended for local MacBook microphone testing.
-
----
 
 ## Limitations
 
