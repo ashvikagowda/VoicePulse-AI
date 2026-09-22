@@ -37,6 +37,7 @@ Streamlit Dashboard
 ```
 
 ---
+
 ## Architecture
 
 ```mermaid
@@ -56,8 +57,6 @@ flowchart TD
     L --> M
     M --> N[Streamlit Dashboard]
 ```
-
-
 
 ## Model
 
@@ -106,7 +105,7 @@ The live classifier therefore uses:
 
 ```text
 AI probability >= 0.85 → AI-GENERATED
-AI probability <  0.85 → REAL
+AI probability < 0.85 → REAL
 ```
 
 ---
@@ -147,6 +146,7 @@ Configuration:
 The dashboard continuously updates the displayed probability and classification as new audio becomes available.
 
 ---
+
 ## Dashboard
 
 The Streamlit dashboard currently displays:
@@ -162,6 +162,7 @@ The Streamlit dashboard currently displays:
 The dashboard is designed for local real-time testing with the MacBook microphone.
 
 ---
+
 ## Live Dashboard
 
 ### Real Voice Detection
@@ -171,6 +172,8 @@ The dashboard is designed for local real-time testing with the MacBook microphon
 ### AI-Generated Voice Detection
 
 ![VoicePulse AI - AI-Generated Voice Detection](assets/fake.png)
+
+---
 
 ## Testing
 
@@ -235,7 +238,7 @@ VoicePulse-AI/
 ├── requirements.txt
 ├── LICENSE
 └── .gitignore
-
+```
 
 ## Limitations
 
@@ -271,6 +274,5 @@ B.E. - Internet of Things, Cybersecurity with Blockchain
 
 Copyright © 2026 Ashvika Gowda. All rights reserved.
 
-The source code and original materials in this repository may not be
-copied, redistributed, modified, or reused without prior written
-permission.
+The source code and original materials in this repository may not be copied, redistributed, modified, or reused without prior written permission.
+
